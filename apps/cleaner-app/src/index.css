@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply font-body text-[13px] leading-[1.5] bg-[#f8fafc] dark:bg-navy-dark text-slate-800 dark:text-slate-200 transition-colors duration-200;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+
+  input, button, select, textarea {
+    @apply text-[16px];
+  }
+}
+
+@layer components {
+  .bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 z-20
+           bg-white/90 dark:bg-navy/90 backdrop-blur-lg
+           border-t border-slate-200 dark:border-slate-800
+           px-6 transition-colors duration-200;
+  }
+
+  .bottom-nav-inner {
+    @apply flex items-center justify-around h-16;
+  }
+
+  .nav-item {
+    @apply flex flex-col items-center gap-1
+           text-slate-400 dark:text-slate-400 transition-colors duration-150
+           font-display text-[9px] font-medium;
+  }
+
+  .nav-item-active {
+    @apply text-navy dark:text-gold;
+  }
+
+  .nav-icon {
+    @apply w-6 h-6;
+  }
+
+  .btn-primary {
+    @apply w-full h-12 bg-gold text-navy-dark font-display font-bold text-[11px]
+           rounded-2xl shadow-md shadow-gold/20 dark:shadow-none
+           hover:bg-gold-dark active:bg-gold-dark
+           transition-all duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply w-full h-12 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-display font-bold text-[11px]
+           rounded-2xl bg-transparent
+           hover:bg-slate-50 dark:hover:bg-navy-light/30 hover:border-slate-300 dark:hover:border-slate-600
+           active:bg-slate-100 dark:active:bg-navy-light/50 transition-all duration-150;
+  }
+}

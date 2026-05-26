@@ -1,0 +1,152 @@
+{
+  "app": {
+    "name": "Corecon",
+    "tagline": "Plataforma de Gestión de Limpieza"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "services": "Servicios",
+    "jobs": "Trabajos",
+    "calendar": "Calendario",
+    "history": "Historial",
+    "assignments": "Asignaciones",
+    "cleaners": "Limpieza",
+    "reports": "Reportes",
+    "settings": "Configuración",
+    "logout": "Cerrar sesión",
+    "profile": "Perfil"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "signUp": "Registrarse",
+    "invalidCredentials": "Correo o contraseña inválidos"
+  },
+  "service": {
+    "create": "Crear Servicio",
+    "createJob": "Crear Trabajo",
+    "edit": "Editar Servicio",
+    "editJob": "Editar Trabajo",
+    "delete": "Eliminar Servicio",
+    "name": "Nombre del Servicio",
+    "clientName": "Nombre del Cliente",
+    "clientEmail": "Correo del Cliente",
+    "clientPhone": "Teléfono del Cliente",
+    "address": "Dirección",
+    "accessInstructions": "Instrucciones de Acceso",
+    "serviceType": "Tipo de Servicio",
+    "customServiceType": "Tipo Personalizado",
+    "duration": "Duración (min)",
+    "estimatedMinutes": "Duración Est.",
+    "specialInstructions": "Instrucciones Especiales",
+    "price": "Precio",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "status": "Estado",
+    "scheduledAt": "Fecha Programada",
+    "assignedStaff": "Personal Asignado",
+    "cancellationReason": "Motivo de Cancelación",
+    "recurrence": "Recurrencia",
+    "daily": "Diario",
+    "weekly": "Semanal",
+    "biweekly": "Quincenal",
+    "monthly": "Mensual",
+    "oneTime": "Una Vez",
+    "needsReviewReason": "Motivo de Revisión",
+    "statuses": {
+      "scheduled": "Programado",
+      "inProgress": "En Progreso",
+      "completed": "Completado",
+      "needsReview": "Requiere Revisión",
+      "cancelled": "Cancelado"
+    },
+    "types": {
+      "residential_standard": "Limpieza Residencial Estándar",
+      "commercial_janitorial": "Limpieza Comercial",
+      "deep_cleaning": "Limpieza Profunda",
+      "move_in": "Limpieza de Entrada",
+      "move_out": "Limpieza de Salida",
+      "recurring": "Servicio Recurrente",
+      "one_time": "Servicio Único"
+    }
+  },
+  "assignment": {
+    "create": "Crear Asignación",
+    "edit": "Editar Asignación",
+    "assign": "Asignar Limpieza",
+    "scheduledDate": "Fecha Programada",
+    "startTime": "Hora de Inicio",
+    "endTime": "Hora de Fin",
+    "clientName": "Nombre del Cliente",
+    "clientAddress": "Dirección del Cliente",
+    "status": {
+      "pending": "Pendiente",
+      "accepted": "Aceptada",
+      "inProgress": "En Progreso",
+      "completed": "Completada",
+      "returned": "Devuelta",
+      "cancelled": "Cancelada"
+    }
+  },
+  "cleaner": {
+    "create": "Agregar Limpieza",
+    "edit": "Editar Limpieza",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "jobsCompleted": "Trabajos Completados",
+    "rating": "Calificación"
+  },
+  "checklist": {
+    "title": "Lista de Verificación",
+    "complete": "Completado",
+    "pending": "Pendiente",
+    "failed": "Falló",
+    "na": "N/A",
+    "addPhoto": "Agregar Foto"
+  },
+  "photo": {
+    "take": "Tomar Foto",
+    "upload": "Subir",
+    "retake": "Repetir",
+    "before": "Antes",
+    "after": "Después",
+    "checklist": "Lista"
+  },
+  "location": {
+    "gpsOff": "GPS está apagado",
+    "outsideRadius": "Estás fuera del área de servicio",
+    "validating": "Validando ubicación...",
+    "valid": "Ubicación verificada"
+  },
+  "sync": {
+    "syncing": "Sincronizando...",
+    "offline": "Estás sin conexión",
+    "pending": "Sincronización pendiente",
+    "completed": "Todos los cambios guardados",
+    "error": "Error de sincronización",
+    "retry": "Reintentar"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "loading": "Cargando...",
+    "noResults": "Sin resultados",
+    "confirm": "Confirmar",
+    "error": "Ocurrió un error",
+    "success": "Éxito",
+    "yes": "Sí",
+    "no": "No",
+    "back": "Volver",
+    "next": "Siguiente",
+    "finish": "Finalizar"
+  }
+}

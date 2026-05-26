@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply font-body text-[13px] leading-[1.5] bg-[#f8fafc] dark:bg-navy-dark text-slate-800 dark:text-slate-200 transition-colors duration-200;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+
+  input, button, select, textarea {
+    @apply text-[16px];
+  }
+}
+
+@layer components {
+  .page-container {
+    @apply max-w-[1400px] mx-auto px-6 py-8 transition-colors duration-200;
+  }
+
+  .page-header {
+    @apply flex items-center justify-between mb-8;
+  }
+
+  .page-title {
+    @apply font-display font-bold text-[28px] leading-[1.2] text-slate-800 dark:text-white;
+  }
+
+  .page-subtitle {
+    @apply font-body text-[13px] text-slate-500 dark:text-slate-400 mt-1;
+  }
+
+  .stat-value {
+    @apply font-display font-bold text-[32px] text-slate-800 dark:text-white leading-none tracking-tight;
+  }
+
+  .stat-label {
+    @apply font-body text-[11px] text-slate-500 dark:text-slate-400 mt-2;
+  }
+
+  .table-container {
+    @apply bg-white dark:bg-navy-dark rounded-[24px] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-200;
+  }
+
+  .table-header {
+    @apply text-left py-4 px-6 font-display font-semibold text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500;
+  }
+
+  .table-cell {
+    @apply py-4 px-6 font-body text-[11px] text-slate-600 dark:text-slate-400;
+  }
+
+  .table-row {
+    @apply border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-navy-light/20 transition-colors duration-150;
+  }
+
+  .modal-overlay {
+    @apply fixed inset-0 bg-navy-dark/60 backdrop-blur-sm flex items-center justify-center z-50;
+  }
+
+  .modal-card {
+    @apply bg-white dark:bg-navy-dark rounded-[24px] shadow-modal p-6 max-w-md w-full mx-4 transition-colors duration-200;
+  }
+
+  .inline-pill {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[9px] font-display font-semibold uppercase tracking-wider transition-colors;
+  }
+}

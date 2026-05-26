@@ -1,0 +1,152 @@
+{
+  "app": {
+    "name": "Corecon",
+    "tagline": "Cleaning Management Platform"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "services": "Services",
+    "jobs": "Jobs",
+    "calendar": "Calendar",
+    "history": "History",
+    "assignments": "Assignments",
+    "cleaners": "Cleaners",
+    "reports": "Reports",
+    "settings": "Settings",
+    "logout": "Log out",
+    "profile": "Profile"
+  },
+  "auth": {
+    "login": "Log in",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "invalidCredentials": "Invalid email or password"
+  },
+  "service": {
+    "create": "Create Service",
+    "createJob": "Create Job",
+    "edit": "Edit Service",
+    "editJob": "Edit Job",
+    "delete": "Delete Service",
+    "name": "Service Name",
+    "clientName": "Client Name",
+    "clientEmail": "Client Email",
+    "clientPhone": "Client Phone",
+    "address": "Address",
+    "accessInstructions": "Access Instructions",
+    "serviceType": "Service Type",
+    "customServiceType": "Custom Type",
+    "duration": "Duration (min)",
+    "estimatedMinutes": "Est. Duration",
+    "specialInstructions": "Special Instructions",
+    "price": "Price",
+    "active": "Active",
+    "inactive": "Inactive",
+    "status": "Status",
+    "scheduledAt": "Scheduled Date",
+    "assignedStaff": "Assigned Staff",
+    "cancellationReason": "Cancellation Reason",
+    "recurrence": "Recurrence",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "biweekly": "Biweekly",
+    "monthly": "Monthly",
+    "oneTime": "One-Time",
+    "needsReviewReason": "Review Reason",
+    "statuses": {
+      "scheduled": "Scheduled",
+      "inProgress": "In Progress",
+      "completed": "Completed",
+      "needsReview": "Needs Review",
+      "cancelled": "Cancelled"
+    },
+    "types": {
+      "residential_standard": "Residential Standard Cleaning",
+      "commercial_janitorial": "Commercial Janitorial",
+      "deep_cleaning": "Deep Cleaning",
+      "move_in": "Move-In Cleaning",
+      "move_out": "Move-Out Cleaning",
+      "recurring": "Recurring Service",
+      "one_time": "One-Time Service"
+    }
+  },
+  "assignment": {
+    "create": "Create Assignment",
+    "edit": "Edit Assignment",
+    "assign": "Assign Cleaner",
+    "scheduledDate": "Scheduled Date",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "clientName": "Client Name",
+    "clientAddress": "Client Address",
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "inProgress": "In Progress",
+      "completed": "Completed",
+      "returned": "Returned",
+      "cancelled": "Cancelled"
+    }
+  },
+  "cleaner": {
+    "create": "Add Cleaner",
+    "edit": "Edit Cleaner",
+    "active": "Active",
+    "inactive": "Inactive",
+    "jobsCompleted": "Jobs Completed",
+    "rating": "Rating"
+  },
+  "checklist": {
+    "title": "Checklist",
+    "complete": "Complete",
+    "pending": "Pending",
+    "failed": "Failed",
+    "na": "N/A",
+    "addPhoto": "Add Photo"
+  },
+  "photo": {
+    "take": "Take Photo",
+    "upload": "Upload",
+    "retake": "Retake",
+    "before": "Before",
+    "after": "After",
+    "checklist": "Checklist"
+  },
+  "location": {
+    "gpsOff": "GPS is off",
+    "outsideRadius": "You are outside the service area",
+    "validating": "Validating location...",
+    "valid": "Location verified"
+  },
+  "sync": {
+    "syncing": "Syncing...",
+    "offline": "You are offline",
+    "pending": "Pending sync",
+    "completed": "All changes saved",
+    "error": "Sync failed",
+    "retry": "Retry"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "confirm": "Confirm",
+    "error": "An error occurred",
+    "success": "Success",
+    "yes": "Yes",
+    "no": "No",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish"
+  }
+}
