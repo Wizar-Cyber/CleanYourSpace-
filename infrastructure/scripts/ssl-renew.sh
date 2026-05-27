@@ -4,8 +4,8 @@ set -e
 echo "=== SSL Certificate Renewal ==="
 
 docker run --rm \
-  -v certbot_data:/etc/letsencrypt \
-  -v certbot_data:/var/lib/letsencrypt \
+  -v corecon_certbot_data:/etc/letsencrypt \
+  -v corecon_certbot_data:/var/lib/letsencrypt \
   -p 80:80 \
   certbot/certbot renew --quiet
 

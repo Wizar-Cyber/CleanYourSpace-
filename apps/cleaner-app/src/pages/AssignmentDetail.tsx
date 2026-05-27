@@ -109,7 +109,7 @@ export function AssignmentDetail() {
       const unwrapped = await api.timeTracking.clockIn({
         assignmentId: id!, latitude: loc.latitude, longitude: loc.longitude, accuracy: loc.accuracy,
       });
-      return unwrapped.data || unwrapped;
+      return (unwrapped as any).data || unwrapped;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assignment', id] });
@@ -129,7 +129,7 @@ export function AssignmentDetail() {
       const unwrapped = await api.timeTracking.clockOut({
         assignmentId: id!, latitude: loc.latitude, longitude: loc.longitude, accuracy: loc.accuracy,
       });
-      return unwrapped.data || unwrapped;
+      return (unwrapped as any).data || unwrapped;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assignment', id] });

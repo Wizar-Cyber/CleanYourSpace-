@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../services/api';
-import { Users, Calendar, Clock, DollarSign, Bell, MapPin, AlertTriangle } from 'lucide-react';
+import { Users, Calendar, MapPin, AlertTriangle } from 'lucide-react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';

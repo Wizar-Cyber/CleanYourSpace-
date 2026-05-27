@@ -75,7 +75,7 @@ export function useAuth() {
 
   const login = useCallback(async (email: string, password: string) => {
     const response = await api.auth.login(email, password);
-    const data = response.data || response;
+    const data = (response as any).data || response;
     const { user: userData, tokens } = data;
     if (!tokens) throw new Error('Invalid response from server');
     localStorage.setItem('auth_tokens', JSON.stringify(tokens));
