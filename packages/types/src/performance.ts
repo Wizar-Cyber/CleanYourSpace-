@@ -1,11 +1,5 @@
 import { z } from 'zod';
 
-export const ScorePeriod = {
-  WEEKLY: 'weekly',
-  MONTHLY: 'monthly',
-  QUARTERLY: 'quarterly',
-} as const;
-
 export const PerformanceScoreSchema = z.object({
   id: z.string().uuid(),
   contractorId: z.string().uuid(),
@@ -152,7 +146,7 @@ export interface IndividualDashboard {
   attendance: AttendanceMetrics;
   punctuality: PunctualityMetrics;
   serviceTimeBreakdown: ServiceTimeMetrics[];
-  recentEvaluations: Evaluation[];
+  recentEvaluations: PerformanceEvaluation[];
   recentIncidents: IncidentSummary[];
   scoreHistory: PerformanceScore[];
 }
@@ -167,7 +161,7 @@ export interface IncidentSummary {
   serviceAddress: string | null;
 }
 
-export interface Evaluation {
+export interface PerformanceEvaluation {
   id: string;
   score: number;
   comment: string | null;

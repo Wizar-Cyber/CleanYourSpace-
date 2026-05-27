@@ -35,10 +35,10 @@ export class SupplyItem {
   @Column({ name: 'current_stock', type: 'decimal', precision: 10, scale: 2, default: 0 })
   currentStock: number;
 
-  @Column({ name: 'supplier', length: 200, nullable: true })
+  @Column({ type: 'varchar', name: 'supplier', length: 200, nullable: true })
   supplier: string | null;
 
-  @Column({ nullable: true, length: 100 })
+  @Column({ type: 'varchar', nullable: true, length: 100 })
   sku: string | null;
 
   @Column({ name: 'is_active', default: true })

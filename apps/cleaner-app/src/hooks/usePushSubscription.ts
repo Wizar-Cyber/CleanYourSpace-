@@ -65,7 +65,7 @@ export function usePushSubscription() {
         const convertedKey = urlBase64ToUint8Array(publicKey);
         subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: convertedKey,
+          applicationServerKey: convertedKey.buffer as ArrayBuffer,
         });
       }
 

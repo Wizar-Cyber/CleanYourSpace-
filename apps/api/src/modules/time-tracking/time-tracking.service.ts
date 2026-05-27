@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan, Between } from 'typeorm';
 import { TimeRecord, TimeRecordType, TimeApprovalStatus } from './time-record.entity';
@@ -10,8 +10,6 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../notifications/notification.entity';
 import { LocationService } from '../location/location.service';
 import { ClockInDto, ClockOutDto, ApproveTimeDto, TimeHistoryQuery, HourReportQuery, InconsistencyType } from '@corecon/types';
-import { UserRole } from '../users/user.entity';
-
 @Injectable()
 export class TimeTrackingService {
   constructor(
@@ -37,7 +35,6 @@ export class TimeTrackingService {
     if (!assignment) throw new NotFoundException('Assignment not found');
     if (assignment.cleanerId !== userId) throw new ForbiddenException('Not your assignment');
 
-    const serviceAddress = (assignment as any).service?.address || '';
     const expectedLat = (assignment as any).service?.latitude || dto.latitude;
     const expectedLon = (assignment as any).service?.longitude || dto.longitude;
 
@@ -59,7 +56,7 @@ export class TimeTrackingService {
       isSynced: true,
     } as any);
 
-    const saved = await this.timeRecordRepository.save(record);
+    const saved = await this.timeRecordRepository.save(record) as unknown as TimeRecord;
 
     assignment.status = 'in_progress' as any;
     (assignment as any).timerStart = new Date();
@@ -93,7 +90,6 @@ export class TimeTrackingService {
 
     const totalMinutes = Math.round((Date.now() - new Date(assignment.timerStart).getTime()) / 60000);
 
-    const serviceAddress = (assignment as any).service?.address || '';
     const expectedLat = (assignment as any).service?.latitude || dto.latitude;
     const expectedLon = (assignment as any).service?.longitude || dto.longitude;
 
@@ -115,7 +111,7 @@ export class TimeTrackingService {
       isSynced: true,
     } as any);
 
-    const saved = await this.timeRecordRepository.save(record);
+    const saved = await this.timeRecordRepository.save(record) as unknown as TimeRecord;
 
     (assignment as any).timerEnd = new Date();
     (assignment as any).totalMinutes = totalMinutes;
@@ -141,7 +137,7 @@ export class TimeTrackingService {
     return { record: saved, assignment, totalMinutes, proximity };
   }
 
-  async getTimer(assignmentId: string, userId?: string) {
+  async getTimer(assignmentId: string, _userId?: string) {
     const assignment = await this.assignmentRepository.findOne({ where: { id: assignmentId } });
     if (!assignment) throw new NotFoundException('Assignment not found');
 
@@ -180,7 +176,7 @@ export class TimeTrackingService {
         assignment: r.assignment ? {
           id: r.assignment.id,
           clientName: (r.assignment as any).service?.clientName || '',
-          serviceName: (r.assignment as any).service?.name || '',
+          serviceName: (r.assignment as any).service?.serviceType || '',
           status: r.assignment.status,
         } : undefined,
       })),
@@ -240,6 +236,10 @@ export class TimeTrackingService {
     const record = await this.timeRecordRepository.findOne({ where: { id: recordId } });
     if (!record) throw new NotFoundException('Time record not found');
 
+    if (record.approvalStatus !== TimeApprovalStatus.PENDING) {
+      throw new BadRequestException('Time record is not pending — cannot modify approved or rejected records');
+    }
+
     if (dto.approved) {
       record.approvalStatus = TimeApprovalStatus.APPROVED;
     } else {
@@ -251,11 +251,11 @@ export class TimeTrackingService {
 
     if (dto.adjustedMinutes) {
       record.adjustedMinutes = dto.adjustedMinutes;
-      record.adjustmentReason = dto.adjustmentReason || null;
+      record.adjustmentReason = dto.adjustmentReason || '';
       record.approvalStatus = TimeApprovalStatus.ADJUSTED;
     }
 
-    const saved = await this.timeRecordRepository.save(record);
+    const saved = await this.timeRecordRepository.save(record) as TimeRecord;
 
     await this.auditService.log({
       userId: approvedBy, action: AuditAction.UPDATE, entityType: 'time_record',

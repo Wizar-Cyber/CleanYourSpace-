@@ -6,9 +6,13 @@ interface RequestOptions extends RequestInit {
 
 async function getAccessToken(): Promise<string | null> {
   const tokens = localStorage.getItem('auth_tokens');
-  if (!tokens) return null;
-  const { accessToken } = JSON.parse(tokens);
-  return accessToken;
+  if (!tokens || tokens === 'undefined') return null;
+  try {
+    const { accessToken } = JSON.parse(tokens);
+    return accessToken;
+  } catch {
+    return null;
+  }
 }
 
 async function refreshTokens(): Promise<boolean> {
@@ -27,7 +31,8 @@ async function refreshTokens(): Promise<boolean> {
     if (!response.ok) return false;
 
     const data = await response.json();
-    localStorage.setItem('auth_tokens', JSON.stringify(data.tokens));
+    const unwrapped = data.data || data;
+    localStorage.setItem('auth_tokens', JSON.stringify(unwrapped.tokens));
     return true;
   } catch {
     return false;
@@ -151,6 +156,16 @@ export const api = {
       apiRequest<any>('/auth/register', { method: 'POST', body: JSON.stringify(data), skipAuth: true }),
     getContractorProfile: (id: string) =>
       apiRequest<any>(`/users/contractor/${id}`),
+  },
+  dashboard: {
+    active: () => apiRequest<any>('/dashboard/active'),
+    today: () => apiRequest<any>('/dashboard/today'),
+    clockedIn: () => apiRequest<any>('/dashboard/clocked-in'),
+    incidents: () => apiRequest<any>('/dashboard/incidents'),
+    hours: (date?: string) => apiRequest<any>(`/dashboard/hours${date ? `?date=${date}` : ''}`),
+    alerts: () => apiRequest<any>('/dashboard/alerts'),
+    missed: () => apiRequest<any>('/dashboard/missed'),
+    geofenceAlerts: () => apiRequest<any>('/dashboard/geofence-alerts'),
   },
   documents: {
     listByUser: (userId: string) => apiRequest<any>(`/documents/user/${userId}`),

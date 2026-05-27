@@ -4,9 +4,13 @@ const API_BASE = '/api/v1';
 
 async function getAccessToken(): Promise<string | null> {
   const tokens = localStorage.getItem('auth_tokens');
-  if (!tokens) return null;
-  const { accessToken } = JSON.parse(tokens);
-  return accessToken;
+  if (!tokens || tokens === 'undefined') return null;
+  try {
+    const { accessToken } = JSON.parse(tokens);
+    return accessToken;
+  } catch {
+    return null;
+  }
 }
 
 async function refreshTokens(): Promise<boolean> {
@@ -25,7 +29,8 @@ async function refreshTokens(): Promise<boolean> {
     if (!response.ok) return false;
 
     const data = await response.json();
-    localStorage.setItem('auth_tokens', JSON.stringify(data.tokens));
+    const unwrapped = data.data || data;
+    localStorage.setItem('auth_tokens', JSON.stringify(unwrapped.tokens));
     return true;
   } catch {
     return false;
@@ -196,6 +201,25 @@ export const api = {
         body: JSON.stringify({ items }),
       }),
     status: () => apiRequest<any>('/sync/status'),
+  },
+  timeTracking: {
+    clockIn: (data: { assignmentId: string; latitude: number; longitude: number; accuracy?: number }) =>
+      apiRequest<{ record: any; assignment: any; proximity: any }>('/time-tracking/clock-in', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    clockOut: (data: { assignmentId: string; latitude: number; longitude: number; accuracy?: number }) =>
+      apiRequest<{ record: any; assignment: any; totalMinutes: number; proximity: any }>('/time-tracking/clock-out', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    getTimer: (assignmentId: string) =>
+      apiRequest<{ active: boolean; startedAt: string; elapsedMinutes: number; elapsedHours: number; totalMinutes: number; paymentCalculated: number }>(`/time-tracking/timer/${assignmentId}`),
+    logPeriodic: (data: { assignmentId: string; latitude: number; longitude: number; accuracy?: number }) =>
+      apiRequest<any>('/time-tracking/periodic-log', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
   },
   rendimiento: {
     getMyDashboard: () => apiRequest<any>('/rendimiento/my-dashboard'),

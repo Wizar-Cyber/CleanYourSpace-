@@ -71,7 +71,6 @@ export class DashboardService {
   }
 
   async getTodayHours() {
-    const today = new Date().toISOString().split('T')[0];
     const records = await this.timeRecordRepository.find({
       where: { type: TimeRecordType.CLOCK_OUT as any, timestamp: new Date() },
     });

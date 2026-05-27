@@ -213,6 +213,9 @@ export function Users() {
                     {user.isActive ? t('users.statusActive') : t('users.statusInactive')}
                   </span>
                   <button
+                    role="switch"
+                    aria-checked={user.isActive}
+                    aria-label={`${user.isActive ? 'Deactivate' : 'Activate'} user ${user.firstName} ${user.lastName}`}
                     onClick={() => toggleMutation.mutate({ id: user.id, isActive: !user.isActive })}
                     className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors duration-200 ease-in-out ${user.isActive ? 'bg-navy dark:bg-gold' : 'bg-gray-200 dark:bg-slate-700'}`}
                   >

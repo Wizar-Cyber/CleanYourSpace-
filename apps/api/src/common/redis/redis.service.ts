@@ -8,13 +8,25 @@ export class RedisService implements OnModuleDestroy {
   private client: RedisClientType | null = null;
   private connected = false;
 
+  private readonly maxRetries = 10;
+
   constructor(private readonly configService: ConfigService) {
     const url = this.configService.get('REDIS_URL') || this.buildRedisUrl();
     try {
-      this.client = createClient({ url });
-      this.client.on('error', (err) => {
+      this.client = createClient({
+        url,
+        socket: {
+          reconnectStrategy: (retries: number, _cause: Error) => {
+            if (retries > this.maxRetries) {
+              this.logger.warn(`Redis: max retries (${this.maxRetries}) reached, giving up`);
+              return false; // stop retrying
+            }
+            return Math.min(retries * 200, 2000); // exponential backoff up to 2s
+          },
+        },
+      });
+      this.client.on('error', (_err) => {
         this.connected = false;
-        this.logger.warn(`Redis connection error: ${err.message}`);
       });
       this.client.on('ready', () => {
         this.connected = true;

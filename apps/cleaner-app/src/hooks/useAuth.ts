@@ -12,12 +12,17 @@ interface User {
   mustChangePassword?: boolean;
   language?: string;
   hourlyRate?: number;
+  contractType?: string | null;
 }
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(() => {
-    const stored = localStorage.getItem('user');
-    return stored ? JSON.parse(stored) : null;
+    try {
+      const stored = localStorage.getItem('user');
+      return stored && stored !== 'undefined' ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
   });
   const [loading, setLoading] = useState(true);
   const idleRef = useRef<ReturnType<typeof setTimeout>>();
@@ -74,7 +79,9 @@ export function useAuth() {
 
   const login = useCallback(async (email: string, password: string) => {
     const response = await api.auth.login(email, password);
-    const { user: userData, tokens } = response;
+    const data = response.data || response;
+    const { user: userData, tokens } = data;
+    if (!tokens) throw new Error('Invalid response from server');
     localStorage.setItem('auth_tokens', JSON.stringify(tokens));
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);

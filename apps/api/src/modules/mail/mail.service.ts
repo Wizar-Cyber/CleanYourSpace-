@@ -106,7 +106,7 @@ export class MailService {
 
   // ── Helpers ──
 
-  private buildEmailTemplate(subject: string, body: string, name: string): string {
+  private buildEmailTemplate(_subject: string, body: string, name: string): string {
     return `
       <!DOCTYPE html>
       <html>

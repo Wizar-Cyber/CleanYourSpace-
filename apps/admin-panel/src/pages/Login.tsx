@@ -7,8 +7,8 @@ import { changeLanguage } from '../i18n';
 import { Moon, Sun, Eye, EyeOff } from 'lucide-react';
 
 export function Login() {
-  const [email, setEmail] = useState('admin@corecon.us');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);

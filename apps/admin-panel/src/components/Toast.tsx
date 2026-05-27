@@ -52,6 +52,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, x: 20, scale: 0.95 }}
               transition={{ duration: 0.2 }}
+              role="status"
+              aria-live="polite"
               className="flex items-center gap-3 px-4 py-3 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 bg-white dark:bg-navy-dark min-w-[300px] max-w-md pointer-events-auto"
             >
               {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />}
@@ -63,6 +65,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               <button
                 onClick={() => removeToast(toast.id)}
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1"
+                aria-label="Dismiss notification"
               >
                 <X className="w-4 h-4" />
               </button>

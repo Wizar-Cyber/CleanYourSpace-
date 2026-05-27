@@ -117,7 +117,8 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
         </div>
         <div className="flex items-center justify-between py-2">
           <span className="font-display font-bold text-[11px] text-slate-600 dark:text-slate-400">{t('users.isActive')}</span>
-          <button type="button" onClick={() => update('isActive', !form.isActive)}
+          <button type="button" role="switch" aria-checked={form.isActive} aria-label="Toggle active state"
+            onClick={() => update('isActive', !form.isActive)}
             className={`relative h-6 w-11 rounded-full transition-colors ${form.isActive ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`}>
             <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${form.isActive ? 'translate-x-5' : 'translate-x-0'}`} />
           </button>

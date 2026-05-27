@@ -72,7 +72,7 @@ export function EditCleanerModal({ isOpen, onClose, cleaner }: EditCleanerModalP
 
           <div className="flex items-center justify-between py-3">
             <span className="font-display font-bold text-[11px] text-slate-600 dark:text-slate-400">{t('cleaners.accountActive')}</span>
-            <button
+            <button role="switch" aria-checked={isActive} aria-label="Toggle cleaner active state"
               onClick={() => setIsActive(!isActive)}
               className={`relative h-6 w-11 rounded-full transition-colors ${isActive ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`}
             >

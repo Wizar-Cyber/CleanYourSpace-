@@ -4,7 +4,9 @@ import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { ServicesService } from './services.service';
 import { Service, ServiceStatus } from './service.entity';
+import { ServiceType } from './service-type.entity';
 import { NotificationsService } from '../notifications/notifications.service';
+import { AssignmentsService } from '../assignments/assignments.service';
 
 describe('ServicesService', () => {
   let service: ServicesService;
@@ -23,7 +25,7 @@ describe('ServicesService', () => {
     longitude: null,
     scheduledAt: new Date(),
     serviceType: 'deep',
-    status: ServiceStatus.PENDING,
+    status: ServiceStatus.SCHEDULED,
     rejectionNote: null,
     verifiedBy: null,
     verifiedAt: null,
@@ -55,6 +57,22 @@ describe('ServicesService', () => {
         {
           provide: NotificationsService,
           useValue: {
+            create: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(ServiceType),
+          useValue: {
+            findOne: jest.fn(),
+            find: jest.fn(),
+            create: jest.fn(),
+            save: jest.fn(),
+          },
+        },
+        {
+          provide: AssignmentsService,
+          useValue: {
+            findByService: jest.fn(),
             create: jest.fn(),
           },
         },
@@ -103,6 +121,7 @@ describe('ServicesService', () => {
     const created: any = { ...mockService, ...dto, scheduledAt: new Date(dto.scheduledAt) };
     repository.create.mockReturnValue(created);
     repository.save.mockResolvedValue(created);
+    repository.findOne.mockResolvedValue(created);
 
     const result: any = await service.create(dto as any);
 
@@ -114,6 +133,6 @@ describe('ServicesService', () => {
     const completedService = { ...mockService, status: ServiceStatus.COMPLETED };
     repository.findOne.mockResolvedValue(completedService);
 
-    await expect(service.update('uuid-123', { name: 'Updated' })).rejects.toThrow(ForbiddenException);
+    await expect(service.update('uuid-123', { clientName: 'Updated' })).rejects.toThrow(ForbiddenException);
   });
 });

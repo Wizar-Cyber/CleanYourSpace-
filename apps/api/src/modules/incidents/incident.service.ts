@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Incident, IncidentStatus } from './incident.entity';
-import { AuditService } from '../audit/audit.service';
 import { CreateIncidentDto, UpdateIncidentDto } from '@corecon/types';
 
 @Injectable()
@@ -10,7 +9,6 @@ export class IncidentService {
   constructor(
     @InjectRepository(Incident)
     private readonly incidentRepository: Repository<Incident>,
-    private readonly auditService: AuditService,
   ) {}
 
   async create(dto: CreateIncidentDto, userId: string) {
@@ -49,7 +47,7 @@ export class IncidentService {
 
     if (dto.status === IncidentStatus.RESOLVED || dto.status === IncidentStatus.CLOSED) {
       incident.resolvedAt = new Date();
-      incident.resolutionNotes = dto.resolutionNotes || null;
+      incident.resolutionNotes = dto.resolutionNotes || '';
     }
 
     return this.incidentRepository.save(incident);

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../services/api';
-import { Users, Calendar, Clock, DollarSign, Bell, FileText } from 'lucide-react';
+import { Users, Calendar, Clock, DollarSign, Bell, MapPin, AlertTriangle } from 'lucide-react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -14,9 +14,19 @@ const cardVariants = {
   }),
 };
 
+function formatRelativeTime(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
+}
+
 export function Dashboard() {
   const { t } = useTranslation();
-  const { data: stats, isLoading: _isLoading } = useQuery({
+  const { data: stats } = useQuery({
     queryKey: ['admin-dashboard'],
     queryFn: async () => {
       const [usersR, assignmentsR] = await Promise.all([
@@ -30,6 +40,35 @@ export function Dashboard() {
     },
     refetchInterval: 30000,
   });
+
+  const { data: alertsData } = useQuery({
+    queryKey: ['admin-dashboard-alerts'],
+    queryFn: async () => {
+      const res = await api.dashboard.alerts();
+      return res.data || res;
+    },
+    refetchInterval: 15000,
+  });
+
+  const { data: clockedIn } = useQuery({
+    queryKey: ['admin-dashboard-clocked-in'],
+    queryFn: async () => {
+      const res = await api.dashboard.clockedIn();
+      return typeof res === 'number' ? res : (res.data ?? res ?? 0);
+    },
+    refetchInterval: 30000,
+  });
+
+  const { data: incidents } = useQuery({
+    queryKey: ['admin-dashboard-incidents'],
+    queryFn: async () => {
+      const res = await api.dashboard.incidents();
+      return res.data || res;
+    },
+    refetchInterval: 30000,
+  });
+
+  const alerts = Array.isArray(alertsData) ? alertsData.slice(0, 5) : [];
 
   const chartData = [
     { name: t('dashboard.completed'), value: stats?.assignments?.completed ?? 12, fill: '#1E8449' },
@@ -47,12 +86,12 @@ export function Dashboard() {
       trend: `${stats?.assignments?.pending ?? 0} ${t('dashboard.pending')}`, trendColor: 'text-gold-dark dark:text-gold',
     },
     {
-      label: t('dashboard.pendingApprovals'), value: stats?.assignments?.pendingVerification ?? '\u2014', icon: Clock,
-      trend: t('dashboard.awaitingReview'), trendColor: 'text-rose-500',
+      label: t('dashboard.clockedIn'), value: clockedIn ?? '\u2014', icon: MapPin,
+      trend: t('dashboard.today'), trendColor: 'text-blue-500',
     },
     {
-      label: t('dashboard.revenue'), value: '$4,500', icon: DollarSign,
-      trend: t('dashboard.last30Days'), trendColor: 'text-gray-400',
+      label: t('dashboard.openIncidents'), value: incidents?.open ?? '\u2014', icon: AlertTriangle,
+      trend: `${incidents?.total ?? 0} ${t('dashboard.total')}`, trendColor: 'text-rose-500',
     },
   ];
 
@@ -133,41 +172,33 @@ export function Dashboard() {
         <div className="bg-white dark:bg-navy-dark rounded-[32px] p-6 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col justify-between transition-colors duration-200">
           <div>
             <div className="flex justify-between items-center mb-6 mt-2">
-              <h2 className="font-display font-bold text-[15px] text-slate-800 dark:text-white tracking-tight">{t('dashboard.recentAlerts')}</h2>
-              <span className="px-3 py-1 bg-gold/10 text-gold-dark dark:text-gold rounded-full font-display font-bold text-[10px] uppercase tracking-widest">3 {t('dashboard.newAlerts')}</span>
+              <h2 className="font-display font-bold text-[15px] text-slate-800 dark:text-white tracking-tight">{t('dashboard.locationAlerts')}</h2>
+              {alerts.length > 0 && (
+                <span className="px-3 py-1 bg-gold/10 text-gold-dark dark:text-gold rounded-full font-display font-bold text-[10px] uppercase tracking-widest">{alerts.length} {t('dashboard.newAlerts')}</span>
+              )}
             </div>
 
-            <div className="space-y-3">
-              <div className="flex gap-4 p-4 rounded-2xl bg-gold/5 dark:bg-gold/10 border border-gold/10 dark:border-gold/20">
-                <div className="mt-1 w-8 h-8 rounded-full bg-gold/10 text-gold-dark dark:text-gold flex items-center justify-center shrink-0">
-                  <Bell className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="font-display font-bold text-[13px] text-slate-800 dark:text-slate-200">New service request from "Penthouse Vista Mar"</p>
-                  <p className="font-display font-bold text-[10px] text-gold-dark dark:text-gold uppercase tracking-widest mt-1">13 mins ago</p>
-                </div>
+            {alerts.length === 0 ? (
+              <p className="font-body text-[13px] text-slate-400 dark:text-slate-500 text-center py-8">{t('dashboard.noAlerts')}</p>
+            ) : (
+              <div className="space-y-3">
+                {alerts.map((alert: any) => (
+                  <div key={alert.id} className={`flex gap-4 p-4 rounded-2xl border ${alert.resolved ? 'bg-slate-50 dark:bg-navy-light/30 border-slate-100 dark:border-slate-700 opacity-80' : 'bg-gold/5 dark:bg-gold/10 border-gold/10 dark:border-gold/20'}`}>
+                    <div className={`mt-1 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${alert.resolved ? 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400' : 'bg-gold/10 text-gold-dark dark:text-gold'}`}>
+                      <MapPin className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="font-display font-bold text-[13px] text-slate-800 dark:text-slate-200">
+                        {alert.message || `Geofence alert - ${alert.latitude?.toFixed(4)}, ${alert.longitude?.toFixed(4)}`}
+                      </p>
+                      <p className={`font-display font-bold text-[10px] uppercase tracking-widest mt-1 ${alert.resolved ? 'text-slate-400' : 'text-gold-dark dark:text-gold'}`}>
+                        {formatRelativeTime(alert.createdAt)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              <div className="flex gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-navy-light/30 border border-slate-100 dark:border-slate-700 opacity-80">
-                <div className="mt-1 w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 flex items-center justify-center shrink-0">
-                  <Bell className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="font-display font-bold text-[13px] text-slate-800 dark:text-slate-200">Cleaner "Carolina Rivas" marked assignment complete</p>
-                  <p className="font-display font-bold text-[10px] text-slate-400 uppercase tracking-widest mt-1">13 mins ago</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-navy-light/30 border border-slate-100 dark:border-slate-700 opacity-80">
-                <div className="mt-1 w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 flex items-center justify-center shrink-0">
-                  <FileText className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="font-display font-bold text-[13px] text-slate-800 dark:text-slate-200">Weekly Report generated</p>
-                  <p className="font-display font-bold text-[10px] text-slate-400 uppercase tracking-widest mt-1">13 mins ago</p>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

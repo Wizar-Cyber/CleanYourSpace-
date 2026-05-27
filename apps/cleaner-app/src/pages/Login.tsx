@@ -7,8 +7,8 @@ import { useTheme } from '../components/ThemeContext';
 
 export function Login() {
   const { t } = useTranslation();
-  const [email, setEmail] = useState('cleaner@corecon.us');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);

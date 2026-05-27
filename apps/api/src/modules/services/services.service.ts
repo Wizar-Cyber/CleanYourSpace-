@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, LessThanOrEqual, MoreThanOrEqual, In } from 'typeorm';
+import { Repository, Between, In } from 'typeorm';
 import { Service, ServiceStatus } from './service.entity';
 import { ServiceType } from './service-type.entity';
 import {
@@ -67,7 +67,7 @@ export class ServicesService {
     return this.formatServiceResponse(service);
   }
 
-  async create(dto: CreateServiceDto, userId?: string) {
+  async create(dto: CreateServiceDto, _userId?: string) {
     if (dto.assignedStaffIds?.length) {
       await this.validateNoOverlap(
         dto.assignedStaffIds,
@@ -95,7 +95,7 @@ export class ServicesService {
       recurrenceEndDate: dto.recurrenceEndDate ? new Date(dto.recurrenceEndDate) : null,
     } as any);
 
-    const saved = await this.serviceRepository.save(service);
+    const saved = await this.serviceRepository.save(service) as unknown as Service;
 
     if (dto.assignedStaffIds?.length) {
       for (const cleanerId of dto.assignedStaffIds) {

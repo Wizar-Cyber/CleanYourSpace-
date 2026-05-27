@@ -19,6 +19,14 @@
   input, button, select, textarea {
     @apply text-[16px];
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer components {
@@ -74,3 +82,4 @@
     @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[9px] font-display font-semibold uppercase tracking-wider transition-colors;
   }
 }
+

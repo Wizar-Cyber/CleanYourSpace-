@@ -14,7 +14,7 @@ RUN pnpm --filter @corecon/cleaner-app build
 FROM nginx:alpine
 
 COPY --from=builder /app/apps/cleaner-app/dist /usr/share/nginx/html
-COPY infrastructure/nginx/sites/cleaner.conf /etc/nginx/conf.d/default.conf
+COPY infrastructure/nginx/sites/frontend-cleaner.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 

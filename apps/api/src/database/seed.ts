@@ -94,44 +94,29 @@ async function seed() {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const services = await serviceRepo.save([
     serviceRepo.create({
-      name: 'Standard Cleaning',
-      description: 'Regular cleaning service for homes and offices',
-      duration: 60, price: 80,
       clientName: 'John Smith', address: '123 Main St, Springfield',
       scheduledAt: new Date(today.getTime() + 9 * 3600000),
-      serviceType: 'standard', status: ServiceStatus.PENDING,
+      serviceType: 'standard', estimatedMinutes: 60, status: ServiceStatus.SCHEDULED,
     }),
     serviceRepo.create({
-      name: 'Deep Cleaning',
-      description: 'Thorough deep cleaning of all areas',
-      duration: 120, price: 150,
       clientName: 'Sarah Johnson', address: '456 Oak Ave, Springfield',
       scheduledAt: new Date(today.getTime() + 10 * 3600000),
-      serviceType: 'deep', status: ServiceStatus.PENDING,
+      serviceType: 'deep', estimatedMinutes: 120, status: ServiceStatus.SCHEDULED,
     }),
     serviceRepo.create({
-      name: 'Window Cleaning',
-      description: 'Professional window washing service',
-      duration: 45, price: 60,
       clientName: 'Mike Brown', address: '789 Pine Rd, Springfield',
       scheduledAt: new Date(today.getTime() + 11 * 3600000),
-      serviceType: 'window', status: ServiceStatus.IN_PROGRESS,
+      serviceType: 'window', estimatedMinutes: 45, status: ServiceStatus.IN_PROGRESS,
     }),
     serviceRepo.create({
-      name: 'Carpet Cleaning',
-      description: 'Deep carpet steam cleaning',
-      duration: 90, price: 120,
       clientName: 'Lisa Davis', address: '321 Elm St, Springfield',
       scheduledAt: new Date(today.getTime() + 8 * 3600000),
-      serviceType: 'carpet', status: ServiceStatus.PENDING_VERIFICATION,
+      serviceType: 'carpet', estimatedMinutes: 90, status: ServiceStatus.SCHEDULED,
     }),
     serviceRepo.create({
-      name: 'Move Out Cleaning',
-      description: 'Complete move-out/move-in cleaning',
-      duration: 180, price: 200,
       clientName: 'Tom Wilson', address: '654 Maple Dr, Springfield',
       scheduledAt: new Date(today.getTime() + 13 * 3600000),
-      serviceType: 'move_out', status: ServiceStatus.COMPLETED,
+      serviceType: 'move_out', estimatedMinutes: 180, status: ServiceStatus.COMPLETED,
     }),
   ]);
   console.log(`Created ${services.length} services`);

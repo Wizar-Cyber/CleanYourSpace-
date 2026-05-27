@@ -3,12 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, In, LessThanOrEqual, MoreThanOrEqual, FindOptionsWhere } from 'typeorm';
 import { User } from '../users/user.entity';
 import { ServiceAssignment, AssignmentStatus } from '../assignments/assignment.entity';
-import { Service } from '../services/service.entity';
 import { Incident } from '../incidents/incident.entity';
 import { ServiceChecklistItem, ChecklistItemStatus } from '../checklist/checklist-item.entity';
 import { SupervisorEvaluation } from './evaluation.entity';
 import { PerformanceScore, ScorePeriod } from './performance-score.entity';
 import { AuditService } from '../audit/audit.service';
+import { AuditAction } from '../audit/audit.entity';
 import { CreateEvaluationDto, UpdateEvaluationDto } from '@corecon/types';
 import { LATE_THRESHOLD_MINUTES_DEFAULT } from '@corecon/types';
 
@@ -19,8 +19,6 @@ export class RendimientoService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(ServiceAssignment)
     private readonly assignmentRepository: Repository<ServiceAssignment>,
-    @InjectRepository(Service)
-    private readonly serviceRepository: Repository<Service>,
     @InjectRepository(Incident)
     private readonly incidentRepository: Repository<Incident>,
     @InjectRepository(ServiceChecklistItem)
@@ -306,7 +304,7 @@ export class RendimientoService {
 
     await this.auditService.log({
       userId,
-      action: 'CREATE',
+      action: AuditAction.CREATE,
       entityType: 'supervisor_evaluation',
       entityId: saved.id,
       newValues: { contractorId: dto.contractorId, score: dto.score },
@@ -362,7 +360,7 @@ export class RendimientoService {
 
     await this.auditService.log({
       userId,
-      action: 'UPDATE',
+      action: AuditAction.UPDATE,
       entityType: 'supervisor_evaluation',
       entityId: saved.id,
       newValues: { score: saved.score },
@@ -628,9 +626,9 @@ export class RendimientoService {
       incidentCount,
       servicesCompleted: completed,
       totalHours,
-      avgEvaluationScore: avgEval,
+      avgEvaluationScore: avgEval ?? undefined,
       evaluationCount: evaluations.length,
-      avgTimeVariance,
+      avgTimeVariance: avgTimeVariance ?? undefined,
       details: {
         punctuality,
         serviceTimeBreakdown: serviceTime,

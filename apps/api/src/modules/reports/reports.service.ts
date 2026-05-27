@@ -1,9 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { Report, ReportType, ReportFormat } from './report.entity';
 import { ServiceAssignment, AssignmentStatus } from '../assignments/assignment.entity';
-import { Service } from '../services/service.entity';
 import { User } from '../users/user.entity';
 import { TimeRecord } from '../time-tracking/time-record.entity';
 import { Incident } from '../incidents/incident.entity';
@@ -13,15 +12,11 @@ import * as ExcelJS from 'exceljs';
 
 @Injectable()
 export class ReportsService {
-  private readonly logger = new Logger(ReportsService.name);
-
   constructor(
     @InjectRepository(Report)
     private readonly reportRepository: Repository<Report>,
     @InjectRepository(ServiceAssignment)
     private readonly assignmentRepository: Repository<ServiceAssignment>,
-    @InjectRepository(Service)
-    private readonly serviceRepository: Repository<Service>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(TimeRecord)

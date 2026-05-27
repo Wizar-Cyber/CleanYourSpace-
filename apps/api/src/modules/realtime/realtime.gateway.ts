@@ -17,6 +17,7 @@ interface AuthenticatedSocket extends Socket {
     credentials: true,
   },
   namespace: '/ws',
+  path: '/api/v1/ws',
 })
 @Injectable()
 export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -89,7 +90,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
 
   @SubscribeMessage('request-dashboard')
   handleRequestDashboard(
-    @ConnectedSocket() client: AuthenticatedSocket,
+    @ConnectedSocket() _client: AuthenticatedSocket,
     @MessageBody() data: { section: string },
   ) {
     this.server.to('admin-room').emit('dashboard-request', data);

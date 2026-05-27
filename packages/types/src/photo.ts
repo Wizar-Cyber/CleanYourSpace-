@@ -40,7 +40,7 @@ export const CreatePhotoDto = z.object({
   mimeType: z.string(),
   size: z.number().int().nonnegative().max(512000), // 500KB max
   filePath: z.string().nullable().optional(),
-  fileSizeKb: z.number().nonnegative().nullable().max(500).optional(), // 500KB max
+  fileSizeKb: z.number().nonnegative().max(500).nullable().optional(), // 500KB max
   latitude: z.number().nullable().optional(),
   longitude: z.number().nullable().optional(),
   takenAt: z.string().datetime().nullable().optional(),

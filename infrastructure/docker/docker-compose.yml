@@ -4,6 +4,7 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: corecon-postgres
+    restart: unless-stopped
     environment:
       POSTGRES_DB: corecon
       POSTGRES_USER: corecon
@@ -24,6 +25,7 @@ services:
     image: redis:7-alpine
     container_name: corecon-redis
     command: redis-server --appendonly yes
+    restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
@@ -61,27 +63,13 @@ services:
       context: ../../
       dockerfile: infrastructure/docker/Dockerfile.api
     container_name: corecon-api
+    restart: unless-stopped
+    env_file:
+      - ../../.env
     environment:
       NODE_ENV: production
       API_PORT: 4000
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: corecon
-      DB_USER: corecon
-      DB_PASSWORD: ${DB_PASSWORD:-changeme}
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: ""
-      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
-      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
-      MINIO_ENDPOINT: minio
-      MINIO_PORT: 9000
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-corecon}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-changeme}
-      MINIO_BUCKET: corecon-photos
-      MINIO_USE_SSL: "false"
-      CLEANER_APP_URL: https://cleaner.corecon.us
-      ADMIN_PANEL_URL: https://admin.corecon.us
+      NODE_OPTIONS: "--max-old-space-size=512"
     depends_on:
       postgres:
         condition: service_healthy
@@ -89,6 +77,12 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:4000/api/v1/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     ports:
       - "4000:4000"
     networks:
@@ -100,15 +94,12 @@ services:
       dockerfile: infrastructure/docker/Dockerfile.api
     container_name: corecon-worker
     command: node dist/queues/worker.js
+    restart: unless-stopped
+    env_file:
+      - ../../.env
     environment:
       NODE_ENV: production
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: corecon
-      DB_USER: corecon
-      DB_PASSWORD: ${DB_PASSWORD:-changeme}
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      NODE_OPTIONS: "--max-old-space-size=512"
     depends_on:
       postgres:
         condition: service_healthy
@@ -122,6 +113,7 @@ services:
       context: ../../
       dockerfile: infrastructure/docker/Dockerfile.admin
     container_name: corecon-admin
+    restart: unless-stopped
     environment:
       VITE_API_URL: https://api.corecon.us
     ports:
@@ -136,6 +128,7 @@ services:
       context: ../../
       dockerfile: infrastructure/docker/Dockerfile.cleaner
     container_name: corecon-cleaner
+    restart: unless-stopped
     environment:
       VITE_API_URL: https://api.corecon.us
     ports:
@@ -148,6 +141,7 @@ services:
   nginx:
     image: nginx:alpine
     container_name: corecon-nginx
+    restart: unless-stopped
     volumes:
       - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ../nginx/sites:/etc/nginx/sites:ro

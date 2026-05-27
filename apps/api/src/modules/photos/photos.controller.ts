@@ -4,7 +4,9 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { PhotosService } from './photos.service';
 import { RolesGuard } from '../../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { UserRole } from '../users/user.entity';
 import { CreatePhotoDto } from '@corecon/types';
 
 @Controller('photos')

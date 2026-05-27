@@ -46,7 +46,7 @@ export class ReportProcessor extends WorkerHost {
         ],
       };
 
-      let fileBuffer: Buffer;
+      let fileBuffer: Buffer | undefined;
       if (report.format === 'pdf') {
         fileBuffer = await this.reportsService.generatePDF(reportData);
         report.url = `/api/v1/reports/${report.id}/download`;

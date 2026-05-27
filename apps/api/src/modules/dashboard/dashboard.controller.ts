@@ -38,7 +38,7 @@ export class DashboardController {
 
   @Get('hours')
   @Roles(UserRole.SUPER_ADMIN, UserRole.MANAGER)
-  async getTodayHours(@Query('date') date?: string) {
+  async getTodayHours(@Query('date') _date?: string) {
     return this.dashboardService.getTodayHours();
   }
 

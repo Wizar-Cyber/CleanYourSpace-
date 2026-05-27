@@ -27,7 +27,7 @@ export function useNotifications() {
     const { accessToken } = JSON.parse(tokens);
     const { id, role } = JSON.parse(user);
 
-    const socket = io('/', {
+    const socket = io('/ws', {
       path: '/api/v1/ws',
       auth: { token: accessToken },
       query: { userId: id, role },

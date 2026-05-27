@@ -20,10 +20,10 @@ export class RendimientoController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.MANAGER, UserRole.SUPERVISOR, UserRole.CONTRACTOR)
   async getAttendance(
     @Param('contractorId') contractorId: string,
-    @Query('from') from?: string,
-    @Query('to') to?: string,
     @CurrentUser('id') userId: string,
     @CurrentUser('role') role: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
   ) {
     if (role === UserRole.CONTRACTOR) contractorId = userId;
     return this.rendimientoService.getAttendanceMetrics(contractorId, from, to);
@@ -34,11 +34,11 @@ export class RendimientoController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.MANAGER, UserRole.SUPERVISOR, UserRole.CONTRACTOR)
   async getPunctuality(
     @Param('contractorId') contractorId: string,
+    @CurrentUser('id') userId: string,
+    @CurrentUser('role') role: string,
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('threshold') threshold?: string,
-    @CurrentUser('id') userId: string,
-    @CurrentUser('role') role: string,
   ) {
     if (role === UserRole.CONTRACTOR) contractorId = userId;
     return this.rendimientoService.getPunctualityMetrics(contractorId, from, to, threshold ? Number(threshold) : undefined);
@@ -49,10 +49,10 @@ export class RendimientoController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.MANAGER, UserRole.SUPERVISOR, UserRole.CONTRACTOR)
   async getServiceTime(
     @Param('contractorId') contractorId: string,
-    @Query('from') from?: string,
-    @Query('to') to?: string,
     @CurrentUser('id') userId: string,
     @CurrentUser('role') role: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
   ) {
     if (role === UserRole.CONTRACTOR) contractorId = userId;
     return this.rendimientoService.getServiceTimeMetrics(contractorId, from, to);
@@ -63,10 +63,10 @@ export class RendimientoController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.MANAGER, UserRole.SUPERVISOR, UserRole.CONTRACTOR)
   async getQualityScore(
     @Param('contractorId') contractorId: string,
-    @Query('from') from?: string,
-    @Query('to') to?: string,
     @CurrentUser('id') userId: string,
     @CurrentUser('role') role: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
   ) {
     if (role === UserRole.CONTRACTOR) contractorId = userId;
     return this.rendimientoService.getQualityScore(contractorId, from, to);
@@ -77,10 +77,10 @@ export class RendimientoController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.MANAGER, UserRole.SUPERVISOR, UserRole.CONTRACTOR)
   async getIncidents(
     @Param('contractorId') contractorId: string,
-    @Query('page') page = 1,
-    @Query('limit') limit = 20,
     @CurrentUser('id') userId: string,
     @CurrentUser('role') role: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = 20,
   ) {
     if (role === UserRole.CONTRACTOR) contractorId = userId;
     return this.rendimientoService.getIncidentHistory(contractorId, Number(page), Number(limit));
@@ -99,11 +99,11 @@ export class RendimientoController {
   @Get('evaluations')
   @Roles(UserRole.SUPER_ADMIN, UserRole.MANAGER, UserRole.SUPERVISOR, UserRole.CONTRACTOR)
   async getEvaluations(
+    @CurrentUser('id') userId: string,
+    @CurrentUser('role') role: string,
     @Query('contractorId') contractorId?: string,
     @Query('page') page = 1,
     @Query('limit') limit = 20,
-    @CurrentUser('id') userId: string,
-    @CurrentUser('role') role: string,
   ) {
     if (role === UserRole.CONTRACTOR) contractorId = userId;
     return this.rendimientoService.getEvaluations(contractorId, Number(page), Number(limit));
@@ -158,13 +158,13 @@ export class RendimientoController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.MANAGER, UserRole.SUPERVISOR, UserRole.CONTRACTOR)
   async getScoreHistory(
     @Param('contractorId') contractorId: string,
+    @CurrentUser('id') userId: string,
+    @CurrentUser('role') role: string,
     @Query('period') period = 'monthly',
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('page') page = 1,
     @Query('limit') limit = 20,
-    @CurrentUser('id') userId: string,
-    @CurrentUser('role') role: string,
   ) {
     if (role === UserRole.CONTRACTOR) contractorId = userId;
     return this.rendimientoService.getScoreHistory(contractorId, period, from, to, Number(page), Number(limit));

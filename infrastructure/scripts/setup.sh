@@ -13,12 +13,12 @@ pnpm install
 
 echo "3. Setting up environment..."
 if [ ! -f .env ]; then
-  cp .env.example .env
+  cp .env.production .env
   echo "Created .env file - please update with your values"
 fi
 
 echo "4. Starting infrastructure services..."
-docker-compose -f infrastructure/docker/docker-compose.yml up -d postgres redis minio
+docker compose -f infrastructure/docker/docker-compose.yml up -d postgres redis minio
 
 echo "5. Waiting for database..."
 sleep 5

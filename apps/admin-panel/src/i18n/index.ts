@@ -1,12 +1,15 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import en from './en.json';
-import es from './es.json';
+import { commonEn, commonEs, mergeResources } from '@corecon/i18n';
+import appEn from './en.json';
+import appEs from './es.json';
 
 const savedLang = typeof window !== 'undefined' ? localStorage.getItem('language') : null;
 
+const resources = mergeResources(commonEn, appEn, commonEs, appEs);
+
 i18n.use(initReactI18next).init({
-  resources: { en: { translation: en }, es: { translation: es } },
+  resources,
   lng: savedLang || 'en',
   fallbackLng: 'en',
   interpolation: { escapeValue: false },

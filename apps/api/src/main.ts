@@ -14,10 +14,16 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const configService = app.get(ConfigService);
-
   app.setGlobalPrefix('api/v1');
 
-  app.use(helmet());
+  app.set('trust proxy', 1);
+
+  app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  }));
+
+  app.enableShutdownHooks();
 
   app.enableCors({
     origin: [

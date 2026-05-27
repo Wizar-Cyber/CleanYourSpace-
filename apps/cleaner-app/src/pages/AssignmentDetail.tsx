@@ -74,9 +74,8 @@ export function AssignmentDetail() {
       const timeout = setTimeout(async () => {
         try {
           const loc = await getCurrentPosition();
-          await api.location.log({
-            assignmentId: id, latitude: loc.latitude, longitude: loc.longitude,
-            accuracy: loc.accuracy, timestamp: new Date().toISOString(), isWithinRadius: true,
+          await api.timeTracking.logPeriodic({
+            assignmentId: id!, latitude: loc.latitude, longitude: loc.longitude, accuracy: loc.accuracy,
           });
         } catch {}
       }, 5000);
@@ -90,31 +89,27 @@ export function AssignmentDetail() {
 
   const RADIUS = 100;
 
-  const startMutation = useMutation({
-    mutationFn: async () => {
-      let lat: number | undefined;
-      let lng: number | undefined;
-      if (isOnline) {
-        try {
-          const loc = await getCurrentPosition();
-          lat = loc.latitude;
-          lng = loc.longitude;
-          const svcLat = assignment?.latitude || assignment?.service?.latitude;
-          const svcLng = assignment?.longitude || assignment?.service?.longitude;
-          if (svcLat != null && svcLng != null) {
-            const dist = haversineDistance(lat, lng, svcLat, svcLng);
-            if (dist > RADIUS) {
-              setLocationError(t('assignment.geofenceDistance', { distance: Math.round(dist), radius: RADIUS }));
-              throw new Error('Outside radius');
-            }
-          }
-        } catch (e: any) {
-          if (e.message === 'Outside radius') throw e;
-          setLocationError(t('assignment.locationRequired'));
-          throw new Error('Location required');
-        }
+  const getLocationOrThrow = async () => {
+    const loc = await getCurrentPosition();
+    const svcLat = assignment?.latitude || assignment?.service?.latitude;
+    const svcLng = assignment?.longitude || assignment?.service?.longitude;
+    if (isOnline && svcLat != null && svcLng != null) {
+      const dist = haversineDistance(loc.latitude, loc.longitude, svcLat, svcLng);
+      if (dist > RADIUS) {
+        setLocationError(t('assignment.geofenceDistance', { distance: Math.round(dist), radius: RADIUS }));
+        throw new Error('Outside radius');
       }
-      return api.assignments.start(id!, lat, lng);
+    }
+    return loc;
+  };
+
+  const clockInMutation = useMutation({
+    mutationFn: async () => {
+      const loc = await getLocationOrThrow();
+      const unwrapped = await api.timeTracking.clockIn({
+        assignmentId: id!, latitude: loc.latitude, longitude: loc.longitude, accuracy: loc.accuracy,
+      });
+      return unwrapped.data || unwrapped;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assignment', id] });
@@ -128,24 +123,26 @@ export function AssignmentDetail() {
     },
   });
 
-  const completeMutation = useMutation({
-    mutationFn: () => api.assignments.requestVerification(id!),
+  const clockOutMutation = useMutation({
+    mutationFn: async () => {
+      const loc = await getLocationOrThrow();
+      const unwrapped = await api.timeTracking.clockOut({
+        assignmentId: id!, latitude: loc.latitude, longitude: loc.longitude, accuracy: loc.accuracy,
+      });
+      return unwrapped.data || unwrapped;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assignment', id] });
       queryClient.invalidateQueries({ queryKey: ['cleaner-today'] });
       stopTracking();
       trackedRef.current = false;
+      setLocationError(null);
     },
-  });
-
-  const startTimerMutation = useMutation({
-    mutationFn: () => api.assignments.startTimer(id!),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['assignment', id] }); },
-  });
-
-  const stopTimerMutation = useMutation({
-    mutationFn: () => api.assignments.stopTimer(id!),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['assignment', id] }); },
+    onError: (err: Error) => {
+      if (err.message !== 'Location required' && err.message !== 'Outside radius') {
+        setLocationError(err.message);
+      }
+    },
   });
 
   const [showChecklistWarning, setShowChecklistWarning] = useState(false);
@@ -180,7 +177,7 @@ export function AssignmentDetail() {
       setPendingItems(incomplete);
       setShowChecklistWarning(true);
     } else {
-      completeMutation.mutate();
+      clockOutMutation.mutate();
     }
   };
 
@@ -358,10 +355,10 @@ export function AssignmentDetail() {
 
       <div className="flex gap-3 flex-wrap">
         {isPending && (
-          <button onClick={() => startMutation.mutate()} disabled={startMutation.isPending}
+          <button onClick={() => clockInMutation.mutate()} disabled={clockInMutation.isPending}
             className="flex-1 btn-primary flex items-center justify-center gap-2">
             <Play className="w-5 h-5" />
-            {startMutation.isPending ? t('assignment.starting') : t('assignment.startService')}
+            {clockInMutation.isPending ? t('assignment.starting') : t('assignment.clockIn')}
           </button>
         )}
         {isInProgress && (
@@ -372,25 +369,15 @@ export function AssignmentDetail() {
             <button onClick={() => navigate(`/assignment/${id}/photos`)}
               className="flex-1 btn-secondary flex items-center justify-center gap-2">
               <Camera className="w-5 h-5" />{t('assignment.photos')}</button>
-            {!assignment.timerStart && (
-              <button onClick={() => startTimerMutation.mutate()} disabled={startTimerMutation.isPending}
-                className="flex-1 btn-secondary flex items-center justify-center gap-2">
-                <Timer className="w-5 h-5" />{t('assignment.startTimer')}</button>
-            )}
-            {assignment.timerStart && !assignment.timerEnd && (
-              <button onClick={() => stopTimerMutation.mutate()} disabled={stopTimerMutation.isPending}
-                className="flex-1 btn-secondary flex items-center justify-center gap-2">
-                <Timer className="w-5 h-5" />{t('assignment.stopTimer')}</button>
-            )}
           </>
         )}
       </div>
 
       {isInProgress && !isPendingVerification && (
-        <button onClick={handleCompleteClick} disabled={completeMutation.isPending || showChecklistWarning}
+        <button onClick={handleCompleteClick} disabled={clockOutMutation.isPending || showChecklistWarning}
           className="w-full btn-primary flex items-center justify-center gap-2">
           <CheckCircle className="w-5 h-5" />
-          {completeMutation.isPending ? t('assignment.submitting') : t('assignment.markComplete')}
+          {clockOutMutation.isPending ? t('assignment.submitting') : t('assignment.clockOut')}
         </button>
       )}
 
@@ -421,7 +408,7 @@ export function AssignmentDetail() {
                 className="flex-1 py-2.5 rounded-xl bg-white dark:bg-navy border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-display font-bold text-[11px] transition-colors"
               >{t('assignment.fixItems')}</button>
               <button
-                onClick={() => { setShowChecklistWarning(false); api.assignments.requestVerification(id!, true); queryClient.invalidateQueries({ queryKey: ['assignment', id] }); queryClient.invalidateQueries({ queryKey: ['cleaner-today'] }); stopTracking(); trackedRef.current = false; }}
+                onClick={() => { setShowChecklistWarning(false); clockOutMutation.mutate(); }}
                 className="flex-1 py-2.5 rounded-xl bg-amber-500 text-white font-display font-bold text-[11px] hover:bg-amber-600 transition-colors"
               >{t('assignment.submitAnyway')}</button>
             </div>
@@ -450,7 +437,7 @@ export function AssignmentDetail() {
             <span className="font-display font-bold text-[13px]">{t('assignment.returned')}</span>
           </div>
           <p className="font-body text-[11px]">{assignment.rejectionNote || t('assignment.reviewResubmit')}</p>
-          <button onClick={() => startMutation.mutate()} className="mt-3 btn-primary flex items-center justify-center gap-2">
+          <button onClick={() => clockInMutation.mutate()} className="mt-3 btn-primary flex items-center justify-center gap-2">
             <Play className="w-5 h-5" />{t('assignment.resumeService')}</button>
         </div>
       )}

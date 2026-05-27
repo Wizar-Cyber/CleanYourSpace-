@@ -21,7 +21,7 @@ describe('AssignmentsService', () => {
     passwordHash: 'hash',
     firstName: 'Cleaner',
     lastName: 'One',
-    role: UserRole.CLEANER,
+    role: UserRole.CONTRACTOR,
     isActive: true,
     phone: null,
     photoUrl: null,

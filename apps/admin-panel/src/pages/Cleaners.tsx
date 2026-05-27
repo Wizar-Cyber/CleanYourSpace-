@@ -158,6 +158,9 @@ export function Cleaners() {
                     {cleaner.isActive ? t('cleaners.statusActive') : t('cleaners.statusInactive')}
                   </span>
                   <button
+                    role="switch"
+                    aria-checked={cleaner.isActive}
+                    aria-label={`${cleaner.isActive ? 'Deactivate' : 'Activate'} cleaner ${cleaner.firstName} ${cleaner.lastName}`}
                     onClick={() => {
                       if (cleaner.isActive) {
                         addToast(t('cleaners.cannotDisable', { name: cleaner.firstName }), 'info');

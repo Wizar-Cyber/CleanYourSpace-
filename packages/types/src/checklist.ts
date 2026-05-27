@@ -49,6 +49,8 @@ export const CreateChecklistTemplateDto = z.object({
       order: z.number().int().nonnegative(),
       required: z.boolean(),
       category: z.string().nullable().optional(),
+      requiresPhoto: z.boolean().optional(),
+      maxPhotos: z.number().int().nonnegative().optional(),
     }),
   ),
 });
@@ -58,6 +60,7 @@ export type CreateChecklistTemplateDto = z.infer<typeof CreateChecklistTemplateD
 export const UpdateChecklistItemDto = z.object({
   status: z.nativeEnum(ChecklistItemStatus),
   notes: z.string().nullable().optional(),
+  photoId: z.string().uuid().optional(),
 });
 
 export type UpdateChecklistItemDto = z.infer<typeof UpdateChecklistItemDto>;

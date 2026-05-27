@@ -59,7 +59,7 @@ export function JobsCalendar() {
     onError: (err: Error) => addToast(err.message, 'error'),
   });
 
-  const services: any[] = servicesData ?? [];
+  const services: any[] = (servicesData?.data || servicesData) ?? [];
 
   const navigate = (direction: number) => {
     const next = new Date(currentDate);

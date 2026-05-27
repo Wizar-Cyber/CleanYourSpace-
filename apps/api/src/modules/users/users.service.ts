@@ -223,7 +223,7 @@ export class UsersService {
       recentAssignments: assignments.slice(0, 10).map((a) => ({
         id: a.id,
         status: a.status,
-        serviceName: a.service?.name || null,
+        serviceName: a.service?.serviceType || null,
         scheduledDate: a.scheduledDate,
         totalMinutes: a.totalMinutes,
         paymentCalculated: a.paymentCalculated,

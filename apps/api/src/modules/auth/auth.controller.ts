@@ -1,10 +1,10 @@
 import {
-  Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Req, UnauthorizedException,
+  Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Req,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
-import { Throttle, SkipThrottle } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';

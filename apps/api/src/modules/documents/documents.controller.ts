@@ -11,8 +11,8 @@ import { UserRole } from '../users/user.entity';
 import { CreateDocumentDto } from '@corecon/types';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
-import { diskStorage } from 'multer';
 import { ConfigService } from '@nestjs/config';
+import { diskStorage } from 'multer';
 
 @Controller('documents')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, In, Not } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ServiceAssignment, AssignmentStatus } from './assignment.entity';
 import { User } from '../users/user.entity';
 import { AuditService } from '../audit/audit.service';
@@ -45,7 +45,7 @@ export class AssignmentsService {
     return {
       data: data.map((a) => ({
         ...a,
-        serviceName: a.service?.name,
+        serviceName: a.service?.serviceType,
         clientName: a.service?.clientName,
         clientAddress: a.service?.address,
         cleanerName: a.cleaner ? `${a.cleaner.firstName} ${a.cleaner.lastName}` : undefined,
@@ -159,7 +159,7 @@ export class AssignmentsService {
         userId,
         type: NotificationType.SERVICE_STARTED as any,
         title: 'Service Started',
-        body: `Service "${assignment.service?.name}" has been started`,
+body: `Service "${assignment.service?.serviceType}" has been started`,
         relatedServiceId: assignment.serviceId,
       });
     }
@@ -223,7 +223,7 @@ export class AssignmentsService {
       userId,
       type: NotificationType.SERVICE_STARTED as any,
       title: 'Service Started',
-      body: `Service "${assignment.service?.name}" has been started`,
+      body: `Service "${assignment.service?.serviceType}" has been started`,
       relatedServiceId: assignment.serviceId,
     });
 
@@ -277,7 +277,7 @@ export class AssignmentsService {
         userId: admin.id,
         type: NotificationType.SERVICE_PENDING_VERIFICATION as any,
         title: 'Service Pending Verification',
-        body: `Service "${assignment.service?.name}" at ${(assignment.service as any)?.address || ''} is awaiting verification`,
+        body: `Service "${assignment.service?.serviceType}" at ${(assignment.service as any)?.address || ''} is awaiting verification`,
         relatedServiceId: assignment.serviceId,
       });
     }
@@ -346,7 +346,7 @@ export class AssignmentsService {
   async findOverlapping(
     staffIds: string[],
     startTime: Date,
-    endTime: Date,
+    _endTime: Date,
     excludeServiceId?: string,
   ) {
     const query = this.assignmentRepository.createQueryBuilder('a')

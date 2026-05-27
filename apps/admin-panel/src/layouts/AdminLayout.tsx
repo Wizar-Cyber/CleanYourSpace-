@@ -30,10 +30,14 @@ export function AdminLayout() {
 
   return (
     <div className="flex h-screen bg-[#f8fafc] dark:bg-navy-dark text-slate-800 dark:text-slate-100 overflow-hidden transition-colors duration-200">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-navy focus:text-white focus:rounded-xl focus:text-sm focus:font-display focus:font-semibold">
+        Skip to main content
+      </a>
       <aside
         className={`${
           collapsed ? 'w-[72px]' : 'w-[240px]'
         } bg-white dark:bg-navy-dark flex flex-col shrink-0 border-r border-slate-200 dark:border-slate-800 shadow-sm relative transition-all duration-200`}
+        aria-label="Main navigation"
       >
         <div className="p-4 border-b border-slate-100 dark:border-slate-800">
           <div className={`flex items-center ${collapsed ? 'justify-center' : 'justify-between'}`}>
@@ -58,8 +62,9 @@ export function AdminLayout() {
               <button
                 onClick={toggleTheme}
                 className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-navy-light/50 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               >
-                {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                {isDark ? <Sun className="w-4 h-4" aria-hidden="true" /> : <Moon className="w-4 h-4" aria-hidden="true" />}
               </button>
             </div>
           </div>
@@ -68,11 +73,14 @@ export function AdminLayout() {
         <button
           onClick={() => setCollapsed((c) => !c)}
           className={`absolute -right-3 top-20 z-10 w-6 h-6 rounded-full bg-white dark:bg-navy-light border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors`}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-expanded={!collapsed}
+          aria-controls="main-nav"
         >
           {collapsed ? <PanelLeftOpen className="w-3.5 h-3.5" /> : <PanelLeftClose className="w-3.5 h-3.5" />}
         </button>
 
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav id="main-nav" className="flex-1 px-3 py-4 space-y-1" aria-label="Sidebar">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -89,7 +97,7 @@ export function AdminLayout() {
               }
               title={collapsed ? t(item.labelKey) : undefined}
             >
-              <item.icon className="w-[18px] h-[18px] shrink-0" />
+              <item.icon className="w-[18px] h-[18px] shrink-0" aria-hidden="true" />
               <span className={`overflow-hidden transition-all duration-200 ${collapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>{t(item.labelKey)}</span>
             </NavLink>
           ))}
@@ -126,7 +134,7 @@ export function AdminLayout() {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-auto">
+      <main id="main-content" className="flex-1 overflow-auto" tabIndex={-1}>
         <Outlet />
       </main>
     </div>

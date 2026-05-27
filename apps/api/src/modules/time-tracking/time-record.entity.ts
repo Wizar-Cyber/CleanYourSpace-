@@ -1,5 +1,5 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn,
+  Entity, PrimaryGeneratedColumn, Column, CreateDateColumn,
   ManyToOne, JoinColumn, Index,
 } from 'typeorm';
 import { User } from '../users/user.entity';
@@ -93,7 +93,4 @@ export class TimeRecord {
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
 }

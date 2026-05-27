@@ -19,9 +19,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "paths": {
-      "@/*": ["src/*"],
-      "@corecon/types": ["../../packages/types/src"],
-      "@corecon/i18n": ["../../packages/i18n/src"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src/**/*"],

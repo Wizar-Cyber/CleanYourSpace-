@@ -16,7 +16,11 @@ export function EditUserModal({ isOpen, onClose, user }: EditUserModalProps) {
   const { addToast } = useToast();
   const queryClient = useQueryClient();
 
-  const currentUserRole = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).role : null;
+  let currentUserRole = null;
+  try {
+    const raw = localStorage.getItem('user');
+    if (raw && raw !== 'undefined') currentUserRole = JSON.parse(raw).role;
+  } catch {}  
   const canEditAll = currentUserRole === 'super_admin' || currentUserRole === 'manager';
 
   const [firstName, setFirstName] = useState(user?.firstName || '');
@@ -109,7 +113,8 @@ export function EditUserModal({ isOpen, onClose, user }: EditUserModalProps) {
 
               <div className="flex items-center justify-between py-3">
                 <span className="font-display font-bold text-[11px] text-slate-600 dark:text-slate-400">{t('users.isActive')}</span>
-                <button type="button" onClick={() => setIsActive(!isActive)}
+                <button type="button" role="switch" aria-checked={isActive} aria-label="Toggle user active state"
+                  onClick={() => setIsActive(!isActive)}
                   className={`relative h-6 w-11 rounded-full transition-colors ${isActive ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`}>
                   <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${isActive ? 'translate-x-5' : 'translate-x-0'}`} />
                 </button>

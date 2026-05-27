@@ -22,10 +22,13 @@ export function NotificationBell() {
         onClick={togglePanel}
         className="relative p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-navy-light/50 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
         title={t('notifications.title')}
+        aria-label={t('notifications.title')}
+        aria-expanded={isOpen}
+        aria-controls="notification-panel"
       >
-        <Bell className="w-[18px] h-[18px]" />
+        <Bell className="w-[18px] h-[18px]" aria-hidden="true" />
         {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 w-4.5 h-4.5 flex items-center justify-center bg-red-500 text-white text-[9px] font-display font-bold rounded-full min-w-[18px] min-h-[18px]">
+          <span className="absolute -top-0.5 -right-0.5 w-4.5 h-4.5 flex items-center justify-center bg-red-500 text-white text-[9px] font-display font-bold rounded-full min-w-[18px] min-h-[18px]" aria-label={`${unreadCount} unread notifications`}>
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
@@ -33,7 +36,7 @@ export function NotificationBell() {
       {isOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={closePanel} />
-          <div className="absolute right-0 top-full mt-2 z-50 w-[380px] bg-white dark:bg-navy-dark border border-slate-200 dark:border-slate-800 rounded-[24px] shadow-xl shadow-black/5 overflow-hidden">
+          <div id="notification-panel" className="absolute right-0 top-full mt-2 z-50 w-[380px] bg-white dark:bg-navy-dark border border-slate-200 dark:border-slate-800 rounded-[24px] shadow-xl shadow-black/5 overflow-hidden" role="dialog" aria-label={t('notifications.title')}>
             <NotificationPanelContent />
           </div>
         </>

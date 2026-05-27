@@ -6,6 +6,7 @@ import { ConflictException, UnauthorizedException, NotFoundException } from '@ne
 import { AuthService } from './auth.service';
 import { User, UserRole } from '../users/user.entity';
 import { AuditService } from '../audit/audit.service';
+import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcrypt';
 
 jest.mock('bcrypt', () => ({
@@ -24,7 +25,7 @@ describe('AuthService', () => {
     passwordHash: 'hashed_password',
     firstName: 'Test',
     lastName: 'User',
-    role: UserRole.CLEANER,
+    role: UserRole.CONTRACTOR,
     isActive: true,
     phone: null,
     photoUrl: null,
@@ -79,6 +80,13 @@ describe('AuthService', () => {
             log: jest.fn().mockResolvedValue(undefined),
           },
         },
+        {
+          provide: MailService,
+          useValue: {
+            sendEmail: jest.fn().mockResolvedValue(undefined),
+            sendNotificationEmail: jest.fn().mockResolvedValue(undefined),
+          },
+        },
       ],
     }).compile();
 
@@ -98,7 +106,8 @@ describe('AuthService', () => {
         password: 'Password123!',
         firstName: 'Test',
         lastName: 'User',
-        role: UserRole.CLEANER,
+        role: UserRole.CONTRACTOR,
+        isActive: true,
       });
 
       expect(result).toHaveProperty('user');
@@ -115,7 +124,8 @@ describe('AuthService', () => {
           password: 'Password123!',
           firstName: 'Test',
           lastName: 'User',
-          role: UserRole.CLEANER,
+          role: UserRole.CONTRACTOR,
+          isActive: true,
         }),
       ).rejects.toThrow(ConflictException);
     });
